@@ -1,21 +1,2 @@
-# electric-bicycle-exam
-
-> Electric bicycle examination site.
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+# 电动车考试网站 (electric-bicycle-exam)
+一个用来答题的小网站，UI、策划来自于其他人。使用 Vue2、Vant 制作。
