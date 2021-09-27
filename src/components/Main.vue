@@ -1,103 +1,296 @@
 <template>
   <div class="container">
-    <single-question v-for="question in questions" :key="question.questionId" v-show="question.questionId === currentQuestionId"
-      :question="question.question" :answer="question.answer" :options="question.options" :ansOptionId="question.ansOptionId" @next="currentQuestionId++">
-    </single-question>
+    <div id="book">
+      <img src="/static/images/yyds.jpg" height="0" width="0">
+      <img src="/static/images/remake.jpg" height="0" width="0">
+      <img src="/static/images/xssl.jpg" height="0" width="0">
+      <div id="spine1"></div>
+      <template v-for="page in pages">
+        <div
+          :key="page.id"
+          class="page"
+          :class="{ 'rotate' : curPage > page.id }"
+        >
+          <!-- :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }" -->
+          <v-touch
+            @swipeleft="nextPage"
+            class="front"
+            :class="page.type"
+            :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }"
+          >
+            <single-question
+              v-if="page.type === 'question'"
+              :loop="loop"
+              :title="page.question.title"
+              :id="page.question.id"
+              :answer="page.question.answer"
+              :options="page.question.options"
+              :ansOptions="page.question.ansOptions"
+              :src="page.question.src"
+              :flex-direction="page.question.flexDirection"
+              @result="calcQuestionResult"
+            >
+            </single-question>
+            <span v-else-if="page.type === 'start'">开始</span>
+            <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
+              <img :src="endingImg"/>
+              <span>{{ score }}</span>
+            </div>
+          </v-touch>
+          <!-- <div class="back" :style="{ zIndex: (page.id) }">
+            <div></div>
+          </div> -->
+          <div class="back" :style="{ zIndex: curPage > page.id ? page.id : (pages.length - page.id) * 2 - 1 + pages.length }">
+            <div></div>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
 import SingleQuestion from './SingleQuestion.vue'
+import { Dialog } from 'vant'
 
 export default {
   data () {
+    let json = require('../../static/pages.json')
+    // console.log(json)
     return {
-      currentQuestionId: 1,
-      questions: [
-        {
-          questionId: 1,
-          question: '骑电动车上坡时，如果马力不足，可以用走S型路线的方式上坡。',
-          options: [
-            {
-              id: 0,
-              text: '对'
-            }, {
-              id: 1,
-              text: '错'
-            }
-          ],
-          ansOptionId: 1,
-          answer: '上坡时马力不足，可以采用下车靠边推行的方式，千万不要走“s”弯路线！那样很危险！'
-        },
-        {
-          questionId: 2,
-          question: '在教学楼附近行驶时，前方出现行人占道现象，应当鸣笛提醒，并减速缓慢超越。',
-          options: [
-            {
-              id: 0,
-              text: '对'
-            }, {
-              id: 1,
-              text: '错'
-            }
-          ],
-          ansOptionId: 1,
-          answer: '在教学楼附近是不可以鸣喇叭的哦！如果要遇到前方行人占道，可以减速靠近，通过电动车发出的声音提醒行人及时让行！再不然喊一下也可以的嘛~'
-        },
-        {
-          questionId: 3,
-          question: '在夜间通过急弯路段进行超车时，应当注意观察情况，及时超越前方车辆。',
-          options: [
-            {
-              id: 0,
-              text: '对'
-            }, {
-              id: 1,
-              text: '错'
-            }
-          ],
-          ansOptionId: 1,
-          answer: '夜间的急弯是不可以超车的哦！其他不可以超车的路段还包括陡坡（湖滨绝望坡！），窄路（譬如人流密集的樱花大道），拱桥等等。'
-        },
-        {
-          questionId: 4,
-          question: '图中的驾驶人有几处危险行为？',
-          options: [
-            {
-              id: 0,
-              text: '1'
-            }, {
-              id: 1,
-              text: '2'
-            }, {
-              id: 2,
-              text: '3'
-            }, {
-              id: 3,
-              text: '4'
-            }
-          ],
-          ansOptionId: 1,
-          answer: '骑行时要佩戴好头盔，并且不能边打电话边骑车哦！'
-        }
-      ]
-    }
-  },
-  watch: {
-    currentQuestionId (newValue, oldValue) {
-      // console.log(newValue, oldValue)
-      if (newValue > this.questions.length) {
-        console.log('End')
-        this.$router.push({name: 'Ending'})
-      }
+      curPage: 0,
+      pages: json.pages,
+      score: 0,
+      // lock: false,
+      loop: 0,
+      endingImg: '../../static/images/remake.jpg'
     }
   },
   components: {
     SingleQuestion
+  },
+  methods: {
+    nextPage () {
+      // 如果当前题目未完成，则阻止翻页
+      // 米神：这个东西很膈应
+      // if (this.lock) {
+      //   Toast.fail('完成当前题目才能进入下一题')
+      //   return
+      // }
+      if (this.curPage < this.pages.length - 1) {
+        this.curPage++
+        // 如果下一页为题目，则上锁
+        for (let idx in this.pages) {
+          if (this.curPage === this.pages[idx].id) {
+            if (this.pages[idx].type === 'question') {
+              this.lock = true
+            }
+            break
+          }
+        }
+      } else {
+        // 如果为最后一页则重开
+        Dialog.confirm({
+          message: '再试一次？'
+        }).then(() => {
+          this.restart()
+        })
+      }
+    },
+    restart () {
+      // 返回首页
+      this.curPage = this.pages[0].id
+      // 增加循环数，触发 SingleQuestion 组件的监听函数
+      this.loop++
+      // 重置分数
+      this.score = 0
+    },
+    calcQuestionResult (res) {
+      this.score += res ? 10 : 0
+      if (this.score >= 90 && this.score < 100) {
+        // 大于等于 90 分且不到 100 分时显示“新手上路”
+        this.endingImg = '../../static/images/xssl.jpg'
+      } else if (this.score === 100) {
+        // 等于一百分时显示“珞珈山车神”
+        this.endingImg = '../../static/images/yyds.jpg'
+      }
+      // this.lock = false
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.container {
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  /* padding: 53px 0 0; */
+  background-color: #2D7BC8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#book {
+  /* margin: 0 33px; */
+  position: absolute;
+  height: 90%;
+  max-height: 780px;
+  width: 90%;
+  max-width: 460px;
+}
+
+#book > img {
+  position: absolute;
+}
+
+#spine1 {
+  height: calc(100% - 2px);
+  width: 20px;
+  background-color: #FFFDFD;
+  border: 1px solid rgba(112, 112, 112, 0.2);
+  border-radius: 20px 10px 10px 20px;
+  position: absolute;
+}
+
+.page {
+  height: 100%;
+  width: calc(100% - 20px);
+  margin: 0 0 0 20px;
+  /* padding: 30px 20px 30px 15px; */
+  /* box-sizing: border-box; */
+  /* background-color: rgba(255, 255, 255, 0.85); */
+  border-radius: 5px;
+  /* transform-origin: left;
+  transform-style: preserve-3d;
+  transform: perspective(1500px) rotateY(0deg); */
+  position: absolute;
+  /* overflow: visible; */
+  /* transition: transform 1s ease; */
+}
+
+.page.rotate {
+  pointer-events: none;
+}
+
+.page .front {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  padding: 30px 20px 30px 15px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-left: 1px solid #E0E0E0;
+  transform-origin: left;
+  transform-style: preserve-3d;
+  transform: perspective(1500px) rotateY(0deg);
+  transition: transform 0.75s ease-in-out;
+  /* firefox 无法使用 overlay 属性值 */
+  /* overflow: overlay; */
+  overflow: auto;
+  backface-visibility: hidden;
+}
+
+.page.rotate .front {
+  transform: perspective(1500px) rotateY(-180deg);
+  background-color: rgba(255, 255, 255, 1);
+  /* z-index: 1; */
+  /* animation: 0.75s ease forwards turn_page; */
+}
+
+.page .back {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  background-color: #F0F0F0;
+  transform-origin: left;
+  transform-style: preserve-3d;
+  transform: perspective(1500px) rotateY(0deg);
+  transition: transform 0.75s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.page.rotate .back {
+  transform: perspective(1500px) rotateY(-180deg);
+}
+
+.page .back > div {
+  transition: opacity 0s 0.435s;
+  opacity: 0;
+}
+
+.page.rotate .back > div {
+  opacity: 0.2;
+  padding: 30%;
+  background-image: url('../../static/images/logo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.page .front.end {
+  padding: 15px 5px;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.page .front.end::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.2;
+  background-image: url('../../static/images/logo.png');
+  background-repeat: no-repeat;
+  background-size: 40%;
+  background-position: center;
+}
+
+#end {
+  position: relative;
+  height: fit-content;
+  width: 100%;
+  height: 100%;
+  animation: 1.75s ease-out backwards show_ending;
+}
+
+@keyframes show_ending {
+  from {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#end > span {
+  position: absolute;
+  left: 54%;
+  top: 12%;
+  color: #FF6C6C;
+  font-size: 48px;
+}
+
+#end > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
 
 </style>
