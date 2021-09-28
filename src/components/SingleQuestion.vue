@@ -1,5 +1,5 @@
 <template>
-  <div class="question-container">
+  <div class="question-container" :style="{ transform: 'translateY(' + top + 'px)' }">
     <div id="top">
       <span class="id">{{ id }}</span>
       <span class="title">{{ title }}</span>
@@ -45,7 +45,8 @@ export default {
     answer: String,
     ansOptions: Array,
     src: String,
-    flexDirection: String
+    flexDirection: String,
+    top: Number
   },
   computed: {
     flexDirectionComputed () {
@@ -109,8 +110,14 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 19px;
-  pointer-events: none;
+  /* 微信内置浏览器不支持 flex gap */
+  /* gap: 19px; */
+  /* pointer-events: none; */
+  /* overflow: hidden; */
+}
+
+.question-container > div:not(:last-child) {
+  margin: 0 0 19px;
 }
 
 #top {
@@ -148,10 +155,11 @@ export default {
   display: flex;
   width: 100%;
   align-items: center;
-  gap: 15px;
+  /* gap: 15px; */
 }
 
 #img-temp img {
+  margin: 0 15px 15px 0;
   width: 60%;
   max-width: 200px;
   border-radius: 10px;
@@ -163,7 +171,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 13px;
+  /* gap: 13px; */
   pointer-events: initial;
 }
 
@@ -177,10 +185,15 @@ export default {
   transition: 0.75s background-color;
 }
 
+#options > .option:not(:last-child) {
+  margin: 0 0 13px;
+}
+
 #answer {
   width: 100%;
   position: relative;
-  overflow: hidden;
+  /* 使用 overflow: hidden; 会导致解答文字也被隐藏，answer 无法被内容撑起来 */
+  /* overflow: hidden; */
   /* flex: 1 auto; */
 }
 
@@ -212,9 +225,10 @@ export default {
   position: absolute;
   background-color: #B0B0B0;
   transition: 1s transform ease;
+  transform-origin: bottom;
 }
 
 #overlay.close {
-  transform: translateY(150%);
+  transform: scale(1, 0);
 }
 </style>

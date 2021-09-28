@@ -14,6 +14,8 @@
           <!-- :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }" -->
           <v-touch
             @swipeleft="nextPage"
+            @panup="scroll"
+            @pandown="scroll"
             class="front"
             :class="page.type"
             :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }"
@@ -25,9 +27,10 @@
               :id="page.question.id"
               :answer="page.question.answer"
               :options="page.question.options"
-              :ansOptions="page.question.ansOptions"
+              :ans-options="page.question.ansOptions"
               :src="page.question.src"
               :flex-direction="page.question.flexDirection"
+              :top="scrollTop"
               @result="calcQuestionResult"
             >
             </single-question>
@@ -63,7 +66,8 @@ export default {
       score: 0,
       // lock: false,
       loop: 0,
-      endingImg: '../../static/images/remake.jpg'
+      endingImg: '../../static/images/remake.jpg',
+      scrollTop: 0
     }
   },
   components: {
@@ -115,6 +119,16 @@ export default {
         this.endingImg = '../../static/images/yyds.jpg'
       }
       // this.lock = false
+    },
+    scroll (e) {
+      // console.log(e)
+      // if (e.type === 'panup') {
+      //   this.scrollTop -= e.distance / 16
+      //   console.log(this.scrollTop)
+      // } else if (e.type === 'pandown') {
+      //   this.scrollTop += e.distance / 16
+      //   console.log(this.scrollTop)
+      // }
     }
   }
 }
@@ -170,9 +184,9 @@ export default {
   /* transition: transform 1s ease; */
 }
 
-.page.rotate {
+/* .page.rotate {
   pointer-events: none;
-}
+} */
 
 .page .front {
   position: absolute;
@@ -189,7 +203,7 @@ export default {
   transition: transform 0.75s ease-in-out;
   /* firefox 无法使用 overlay 属性值 */
   /* overflow: overlay; */
-  overflow: auto;
+  overflow: hidden;
   backface-visibility: hidden;
 }
 
@@ -213,7 +227,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .page.rotate .back {
@@ -228,7 +242,7 @@ export default {
 .page.rotate .back > div {
   opacity: 0.2;
   padding: 30%;
-  background-image: url('../../static/images/logo.png');
+  background-image: url('../../static/images/logo_reverse.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -238,7 +252,7 @@ export default {
   padding: 15px 5px;
   display: flex;
   align-items: center;
-  overflow: visible;
+  /* overflow: visible; */
 }
 
 .page .front.end::before {

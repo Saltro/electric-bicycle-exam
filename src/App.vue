@@ -12,8 +12,8 @@ export default {
 
 <style>
 @font-face {
-  src: url('../static/AaJueXingHei.ttf');
   font-family: 'AaJueXingHei';
+  src: url('/static/AaJXH.ttf') format('truetype');
 }
 
 #app {
