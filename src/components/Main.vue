@@ -34,9 +34,11 @@
               @result="calcQuestionResult"
             >
             </single-question>
-            <span v-else-if="page.type === 'start'">开始</span>
+            <div v-else-if="page.type === 'start'" id="start">
+              <img src="/static/images/index.jpg"/>
+            </div>
             <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
-              <img :src="endingImg"/>
+              <img :src="endingImg" ref="resultImg"/>
               <span>{{ score }}</span>
             </div>
           </v-touch>
@@ -66,7 +68,7 @@ export default {
       score: 0,
       // lock: false,
       loop: 0,
-      endingImg: '../../static/images/remake.jpg',
+      endingImg: '/static/images/remake.jpg',
       scrollTop: 0
     }
   },
@@ -113,10 +115,10 @@ export default {
       this.score += res ? 10 : 0
       if (this.score >= 90 && this.score < 100) {
         // 大于等于 90 分且不到 100 分时显示“新手上路”
-        this.endingImg = '../../static/images/xssl.jpg'
+        this.endingImg = '/static/images/xssl.jpg'
       } else if (this.score === 100) {
         // 等于一百分时显示“珞珈山车神”
-        this.endingImg = '../../static/images/yyds.jpg'
+        this.endingImg = '/static/images/yyds.jpg'
       }
       // this.lock = false
     },
@@ -130,6 +132,9 @@ export default {
       //   console.log(this.scrollTop)
       // }
     }
+  },
+  mounted () {
+    console.log(this.$refs)
   }
 }
 </script>
@@ -242,17 +247,29 @@ export default {
 .page.rotate .back > div {
   opacity: 0.2;
   padding: 30%;
-  background-image: url('../../static/images/logo_reverse.png');
+  background-image: url('/static/images/logo_reverse.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
 }
 
-.page .front.end {
+.page .front.end, .page .front.start {
   padding: 15px 5px;
   display: flex;
   align-items: center;
   /* overflow: visible; */
+}
+
+.page .front.start {
+  background-color: #52C6EF;
+}
+
+#start {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .page .front.end::before {
@@ -263,7 +280,7 @@ export default {
   top: 0;
   left: 0;
   opacity: 0.2;
-  background-image: url('../../static/images/logo.png');
+  background-image: url('/static/images/logo.png');
   background-repeat: no-repeat;
   background-size: 40%;
   background-position: center;
@@ -275,6 +292,9 @@ export default {
   width: 100%;
   height: 100%;
   animation: 1.75s ease-out backwards show_ending;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes show_ending {
@@ -298,12 +318,13 @@ export default {
   top: 12%;
   color: #FF6C6C;
   font-size: 48px;
+  font-family: 'ZCOOL', 'AaJueXingHei';
 }
 
-#end > img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+#end > img, #start > img {
+  /* 使图片盒子等于图片本身大小，同时又能够满足 contain 要求 */
+  max-width: 100%;
+  max-height: 100%;
   pointer-events: none;
 }
 

@@ -16,6 +16,11 @@ export default {
   src: url('/static/AaJXH.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'ZCOOL';
+  src: url('/static/ZCOOL.ttf') format('truetype');
+}
+
 #app {
   font-family: 'AaJueXingHei', 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
