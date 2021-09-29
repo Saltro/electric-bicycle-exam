@@ -4,7 +4,7 @@
       <img src="/static/images/yyds.jpg" height="0" width="0">
       <img src="/static/images/remake.jpg" height="0" width="0">
       <img src="/static/images/xssl.jpg" height="0" width="0">
-      <div id="spine1"></div>
+      <div id="spine"></div>
       <template v-for="page in pages">
         <div
           :key="page.id"
@@ -38,8 +38,8 @@
               <img src="/static/images/index.jpg"/>
             </div>
             <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
-              <img :src="endingImg" ref="resultImg"/>
-              <span>{{ score }}</span>
+              <img :src="endingImgPrefix + score + '.jpg'"/>
+              <button @click="restart">再试一次</button>
             </div>
           </v-touch>
           <!-- <div class="back" :style="{ zIndex: (page.id) }">
@@ -68,7 +68,7 @@ export default {
       score: 0,
       // lock: false,
       loop: 0,
-      endingImg: '/static/images/remake.jpg',
+      endingImgPrefix: '/static/images/scores/remake_',
       scrollTop: 0
     }
   },
@@ -95,6 +95,7 @@ export default {
           }
         }
       } else {
+        // 最后一页改为使用按钮重开，保留这种方式
         // 如果为最后一页则重开
         Dialog.confirm({
           message: '再试一次？'
@@ -113,12 +114,12 @@ export default {
     },
     calcQuestionResult (res) {
       this.score += res ? 10 : 0
-      if (this.score >= 90 && this.score < 100) {
+      if (this.score >= 80 && this.score < 100) {
         // 大于等于 90 分且不到 100 分时显示“新手上路”
-        this.endingImg = '/static/images/xssl.jpg'
+        this.endingImgPrefix = '/static/images/scores/xssl_'
       } else if (this.score === 100) {
         // 等于一百分时显示“珞珈山车神”
-        this.endingImg = '/static/images/yyds.jpg'
+        this.endingImgPrefix = '/static/images/scores/yyds_'
       }
       // this.lock = false
     },
@@ -164,7 +165,8 @@ export default {
   position: absolute;
 }
 
-#spine1 {
+#spine {
+  /* 书脊处高度总会多 2px */
   height: calc(100% - 2px);
   width: 20px;
   background-color: #FFFDFD;
@@ -255,12 +257,12 @@ export default {
 
 .page .front.end, .page .front.start {
   padding: 15px 5px;
-  display: flex;
-  align-items: center;
   /* overflow: visible; */
 }
 
 .page .front.start {
+  display: flex;
+  align-items: center;
   background-color: #52C6EF;
 }
 
@@ -288,11 +290,11 @@ export default {
 
 #end {
   position: relative;
-  height: fit-content;
   width: 100%;
   height: 100%;
   animation: 1.75s ease-out backwards show_ending;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -312,20 +314,27 @@ export default {
   }
 }
 
-#end > span {
-  position: absolute;
-  left: 54%;
-  top: 12%;
-  color: #FF6C6C;
-  font-size: 48px;
-  font-family: 'ZCOOL', 'AaJueXingHei';
-}
-
-#end > img, #start > img {
+#start > img {
   /* 使图片盒子等于图片本身大小，同时又能够满足 contain 要求 */
   max-width: 100%;
   max-height: 100%;
   pointer-events: none;
+}
+
+#end > img {
+  height: 90%;
+  width: 90%;
+  object-fit: contain;
+}
+
+#end > button {
+  margin: 20px 0 0;
+  padding: 4px 15px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  border: initial;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #FFFFFF;
 }
 
 </style>
