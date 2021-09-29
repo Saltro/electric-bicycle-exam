@@ -1,9 +1,6 @@
 <template>
   <div class="container">
     <div id="book">
-      <img src="/static/images/yyds.jpg" height="0" width="0">
-      <img src="/static/images/remake.jpg" height="0" width="0">
-      <img src="/static/images/xssl.jpg" height="0" width="0">
       <div id="spine"></div>
       <template v-for="page in pages">
         <div
