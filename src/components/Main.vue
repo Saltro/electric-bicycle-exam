@@ -177,7 +177,7 @@ export default {
 
 @keyframes notice_fly {
   from {
-    transform: translateX(70vw);
+    transform: translateX(55vw);
   }
   to {
     transform: translateX(-90vw);
@@ -190,7 +190,7 @@ export default {
   width: 20px;
   background-color: #FFFDFD;
   border: 1px solid rgba(112, 112, 112, 0.2);
-  border-radius: 20px 10px 10px 20px;
+  border-radius: 20px 0 0 20px;
   position: absolute;
 }
 
@@ -201,7 +201,7 @@ export default {
   /* padding: 30px 20px 30px 15px; */
   /* box-sizing: border-box; */
   /* background-color: rgba(255, 255, 255, 0.85); */
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   /* transform-origin: left;
   transform-style: preserve-3d;
   transform: perspective(1500px) rotateY(0deg); */
@@ -220,7 +220,7 @@ export default {
   width: 100%;
   padding: 30px 20px 30px 15px;
   box-sizing: border-box;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   background-color: rgba(255, 255, 255, 0.85);
   border-left: 1px solid #E0E0E0;
   transform-origin: left;
@@ -244,7 +244,7 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   background-color: #F0F0F0;
   transform-origin: left;
   transform-style: preserve-3d;
