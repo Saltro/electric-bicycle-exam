@@ -144,6 +144,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* 防止上下提示影响页面滑动 */
+  overflow: hidden;
 }
 
 #book {
@@ -155,8 +157,31 @@ export default {
   max-width: 460px;
 }
 
-#book > img {
+#book::before {
+  content: '向左滑动进入下一页';
   position: absolute;
+  top: -25px;
+  color: white;
+  opacity: 0.2;
+  animation: 14s linear infinite notice_fly;
+}
+
+#book::after {
+  content: '向左滑动进入下一页';
+  position: absolute;
+  bottom: -25px;
+  color: white;
+  opacity: 0.2;
+  animation: 14s linear infinite notice_fly;
+}
+
+@keyframes notice_fly {
+  from {
+    transform: translateX(70vw);
+  }
+  to {
+    transform: translateX(-90vw);
+  }
 }
 
 #spine {
