@@ -8,7 +8,6 @@
           class="page"
           :class="{ 'rotate' : curPage > page.id }"
         >
-          <!-- :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }" -->
           <v-touch
             @swipeleft="nextPage"
             @panup="scroll"
@@ -36,12 +35,10 @@
             </div>
             <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
               <img :src="endingImgPrefix + score + '.jpg'"/>
-              <button @click="restart">再试一次</button>
+              <!-- 在最后界面加一个保存图片的“链接” -->
+              <span>长按图片保存结果</span>
             </div>
           </v-touch>
-          <!-- <div class="back" :style="{ zIndex: (page.id) }">
-            <div></div>
-          </div> -->
           <div class="back" :style="{ zIndex: curPage > page.id ? page.id : (pages.length - page.id) * 2 - 1 + pages.length }">
             <div></div>
           </div>
@@ -319,19 +316,19 @@ export default {
 }
 
 #end > img {
-  height: 90%;
-  width: 90%;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
+  /* 手机端在操作时，图片的长按不会影响顶层的左划 */
+  /* pointer-events: none; */
 }
 
-#end > button {
-  margin: 20px 0 0;
-  padding: 4px 15px;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-  border: initial;
-  border-radius: 6px;
-  font-size: 16px;
-  background-color: #FFFFFF;
+#end > span {
+  position: absolute;
+  bottom: 15px;
+  font-size: 12px;
+  color: white;
+  -webkit-text-stroke: 0.75px black;
 }
 
 </style>
