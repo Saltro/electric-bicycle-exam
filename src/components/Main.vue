@@ -108,7 +108,7 @@ export default {
     },
     calcQuestionResult (res) {
       this.score += res ? 10 : 0
-      if (this.score >= 80 && this.score < 100) {
+      if (this.score >= 90 && this.score < 100) {
         // 大于等于 90 分且不到 100 分时显示“新手上路”
         this.endingImgPrefix = '/static/images/scores/xssl_'
       } else if (this.score === 100) {
