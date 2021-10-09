@@ -178,6 +178,7 @@ export default {
   font-size: 16px;
   background-color: #FFFFFF;
   transition: 0.75s background-color;
+  font-family: 'AaJueXingHei';
 }
 
 #options > .option:not(:last-child) {

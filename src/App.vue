@@ -21,6 +21,11 @@ export default {
   src: url('/static/AaJXH.ttf') format('truetype');
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   font-family: 'AaJueXingHei', 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

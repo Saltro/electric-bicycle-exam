@@ -73,6 +73,7 @@ export default {
   border-right: 1px solid rgba(112, 112, 112, 0.2);
   border-top: 1px solid rgba(112, 112, 112, 0.2);
   pointer-events: initial;
+  font-family: 'AaJueXingHei';
 }
 
 #dialog__buttons .dialog__button:first-child {
