@@ -44,8 +44,6 @@
           </div>
         </div>
       </template>
-      <!-- 图片预加载 -->
-      <img :src="endingImgPrefix + score + '.jpg'" height="0" width="0" style="position: absolute;"/>
     </div>
   </div>
 </template>
