@@ -45,29 +45,38 @@
         </div>
       </template>
     </div>
+    <my-dialog
+      id="restart-dialog"
+      content="再试一次？"
+      :buttons="restartDialogButtons"
+      v-show="isRestartDialogShow"
+      @clickResult="dialogClickResult"
+    >
+    </my-dialog>
   </div>
 </template>
 
 <script>
 import SingleQuestion from './SingleQuestion.vue'
-import { Dialog } from 'vant'
+import Dialog from './Dialog.vue'
 
 export default {
   data () {
     let json = require('../../static/pages.json')
-    // console.log(json)
     return {
       curPage: 0,
       pages: json.pages,
       score: 0,
-      // lock: false,
       loop: 0,
       endingImgPrefix: '/static/images/scores/remake_',
-      scrollTop: 0
+      scrollTop: 0,
+      isRestartDialogShow: false,
+      restartDialogButtons: ['确认', '取消']
     }
   },
   components: {
-    SingleQuestion
+    SingleQuestion,
+    'MyDialog': Dialog
   },
   methods: {
     nextPage () {
@@ -91,12 +100,15 @@ export default {
       } else {
         // 最后一页改为使用按钮重开，保留这种方式
         // 如果为最后一页则重开
-        Dialog.confirm({
-          message: '再试一次？'
-        }).then(() => {
-          this.restart()
-        })
+        this.isRestartDialogShow = true
       }
+    },
+    dialogClickResult (index) {
+      console.log(index)
+      if (index === 0) {
+        this.restart()
+      }
+      this.isRestartDialogShow = false
     },
     restart () {
       // 返回首页
@@ -356,4 +368,10 @@ export default {
   -webkit-text-stroke: 0.75px black;
 }
 
+#restart-dialog {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
 </style>

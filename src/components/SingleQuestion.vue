@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { Button, Notify } from 'vant'
 import util from '../utils/util'
 
 export default {
@@ -96,10 +95,6 @@ export default {
         }
       }
     }
-  },
-  components: {
-    [Button.name]: Button,
-    [Notify.Component.name]: Notify.Component
   }
 }
 </script>
