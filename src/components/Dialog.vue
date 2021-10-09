@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="dialog__overlay" @click="0">
+    <div id="dialog__overlay">
       <div id="dialog__card">
         <span class="dialog__content">{{ content }}</span>
         <div id="dialog__buttons">
@@ -35,6 +35,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 }
 
 #dialog__card {

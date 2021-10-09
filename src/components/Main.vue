@@ -59,6 +59,7 @@
 <script>
 import SingleQuestion from './SingleQuestion.vue'
 import Dialog from './Dialog.vue'
+// import VueTouch from 'vue-touch'
 
 export default {
   data () {
@@ -141,7 +142,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$refs)
+    console.log(this)
   }
 }
 </script>
