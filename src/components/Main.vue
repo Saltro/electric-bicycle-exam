@@ -31,10 +31,10 @@
             >
             </single-question>
             <div v-else-if="page.type === 'start'" id="start">
-              <img src="/static/images/index.jpg"/>
+              <img src="https://tva1.sinaimg.cn/mw690/005K8PLRgy1gvajrzh8abj60r61cbgpb02.jpg" alt="index">
             </div>
             <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
-              <img :src="endingImgPrefix + score + '.jpg'"/>
+              <img :src="getEndingImgUrlByScore(score)"/>
               <!-- 在最后界面加一个保存图片的“链接” -->
               <span>长按图片保存结果</span>
             </div>
@@ -69,7 +69,6 @@ export default {
       pages: json.pages,
       score: 0,
       loop: 0,
-      endingImgPrefix: '/static/images/scores/remake_',
       scrollTop: 0,
       isRestartDialogShow: false,
       restartDialogButtons: ['确认', '取消']
@@ -80,6 +79,22 @@ export default {
     'MyDialog': Dialog
   },
   methods: {
+    getEndingImgUrlByScore (score) {
+      let endingImgUrls = [
+        'https://tvax1.sinaimg.cn/mw690/005K8PLRgy1gvajvsqt80j60p018gq7r02.jpg',
+        'https://tva4.sinaimg.cn/mw690/005K8PLRgy1gvajvt2kzej60p018ggqg02.jpg',
+        'https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajvtd2rkj60p018gaex02.jpg',
+        'https://tva2.sinaimg.cn/mw690/005K8PLRgy1gvajvtk66ij60p018g43d02.jpg',
+        'https://tva4.sinaimg.cn/mw690/005K8PLRgy1gvajvqvjm5j60p018g79502.jpg',
+        'https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajvr34a8j60p018g43d02.jpg',
+        'https://tvax3.sinaimg.cn/mw690/005K8PLRgy1gvajvrdbctj60p018g43d02.jpg',
+        'https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajvrlzcaj60p018g79502.jpg',
+        'https://tva2.sinaimg.cn/mw690/005K8PLRgy1gvajvrxsn3j60p018ggqh02.jpg',
+        'https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajvs5amhj60p018gn4402.jpg',
+        'https://tvax3.sinaimg.cn/mw690/005K8PLRgy1gvajvse7tyj60oz18g45902.jpg'
+      ]
+      return endingImgUrls[score / 10]
+    },
     nextPage () {
       // 如果当前题目未完成，则阻止翻页
       // 米神：这个东西很膈应
@@ -89,13 +104,13 @@ export default {
       // }
       if (this.curPage < this.pages.length - 1) {
         this.curPage++
-        // 如果下一页为题目，则上锁
-        for (let idx in this.pages) {
-          if (this.curPage === this.pages[idx].id) {
-            if (this.pages[idx].type === 'question') {
-              this.lock = true
-            }
-            break
+        // 如果此页为倒数第一题，则尝试缓存有可能用到的后三张图片
+        if (this.curPage === this.pages.length - 3) {
+          const preloadImgs = []
+          preloadImgs.push(this.getEndingImgUrlByScore(this.score), this.getEndingImgUrlByScore(this.score + 10), this.getEndingImgUrlByScore(this.score + 20))
+          for (let idx in preloadImgs) {
+            let image = new Image()
+            image.src = preloadImgs[idx]
           }
         }
       } else {
@@ -121,14 +136,6 @@ export default {
     },
     calcQuestionResult (res) {
       this.score += res ? 10 : 0
-      if (this.score >= 90 && this.score < 100) {
-        // 大于等于 90 分且不到 100 分时显示“新手上路”
-        this.endingImgPrefix = '/static/images/scores/xssl_'
-      } else if (this.score === 100) {
-        // 等于一百分时显示“珞珈山车神”
-        this.endingImgPrefix = '/static/images/scores/yyds_'
-      }
-      // this.lock = false
     },
     scroll (e) {
       // console.log(e)

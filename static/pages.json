@@ -63,7 +63,7 @@
       "question": {
         "id": 4,
         "title": "图中的驾驶人有几处危险行为？",
-        "src": "../static/images/impaired_driving.jpg",
+        "src": "https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajrz8a7zj60mj0kudgl02.jpg",
         "flexDirection": "row",
         "options": [
           {
@@ -161,7 +161,7 @@
       "question": {
         "id": 8,
         "title": "下列标志的含义是",
-        "src": "../static/images/stop_dashing.jpg",
+        "src": "https://tvax3.sinaimg.cn/mw690/005K8PLRgy1gvajs0kx37j61s02dcaop02.jpg",
         "flexDirection": "row",
         "options": [
           {
