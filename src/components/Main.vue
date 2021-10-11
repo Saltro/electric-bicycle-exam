@@ -34,10 +34,13 @@
             <div v-else-if="page.type === 'start'" id="start">
               <img src="https://tva1.sinaimg.cn/mw690/005K8PLRgy1gvajrzh8abj60r61cbgpb02.jpg" alt="index">
             </div>
-            <div v-else-if="page.type === 'end' && curPage === page.id" id="end">
-              <img :src="getEndingImgUrlByScore(score)"/>
-              <!-- 在最后界面加一个保存图片的“链接” -->
-              <span>长按图片保存结果</span>
+            <div v-else-if="page.type === 'end'" id="end">
+              <loading class="loading" v-show="isEndLoadingShow"></loading>
+              <div v-if="curPage === page.id" class="image__container" :class="{'show': !isEndLoadingShow}">
+                <img :src="getEndingImgUrlByScore(score)" alt="考试结果" @load="isEndLoadingShow = false"/>
+                <!-- 在最后界面加一个保存图片的“链接” -->
+                <span>长按图片保存结果</span>
+              </div>
             </div>
           </v-touch>
           <div class="back" :style="{ zIndex: curPage > page.id ? page.id : (pages.length - page.id) * 2 - 1 + pages.length }">
@@ -60,6 +63,7 @@
 <script>
 import SingleQuestion from './SingleQuestion.vue'
 import Dialog from './Dialog.vue'
+import Loading from './Loading.vue'
 // import VueTouch from 'vue-touch'
 
 export default {
@@ -72,12 +76,14 @@ export default {
       loop: 0,
       scrollTop: 0,
       isRestartDialogShow: false,
-      restartDialogButtons: ['确认', '取消']
+      restartDialogButtons: ['确认', '取消'],
+      isEndLoadingShow: true
     }
   },
   components: {
     SingleQuestion,
-    'MyDialog': Dialog
+    'MyDialog': Dialog,
+    Loading
   },
   methods: {
     getEndingImgUrlByScore (score) {
@@ -108,7 +114,9 @@ export default {
         // 如果此页为倒数第一题，则尝试缓存有可能用到的后三张图片
         if (this.curPage === this.pages.length - 3) {
           const preloadImgs = []
-          preloadImgs.push(this.getEndingImgUrlByScore(this.score), this.getEndingImgUrlByScore(this.score + 10), this.getEndingImgUrlByScore(this.score + 20))
+          for (let i = this.curPage; i <= this.pages.length - 1; i++) {
+            preloadImgs.push(this.getEndingImgUrlByScore(i * 10))
+          }
           for (let idx in preloadImgs) {
             let image = new Image()
             image.src = preloadImgs[idx]
@@ -313,7 +321,7 @@ export default {
   background-color: #52C6EF;
 }
 
-#start {
+#start, #end {
   height: 100%;
   width: 100%;
   display: flex;
@@ -335,11 +343,15 @@ export default {
   background-position: center;
 }
 
-#end {
+#end .image__container {
   position: relative;
   width: 100%;
   height: 100%;
-  animation: 1.75s ease-out backwards show_ending;
+  display: none;
+}
+
+#end .image__container.show {
+  animation: 1.75s 0.5s ease-out backwards show_ending;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -348,10 +360,6 @@ export default {
 
 @keyframes show_ending {
   from {
-    opacity: 0;
-    transform: scale(1.3);
-  }
-  50% {
     opacity: 0;
     transform: scale(1.3);
   }
@@ -368,7 +376,7 @@ export default {
   pointer-events: none;
 }
 
-#end > img {
+.image__container > img {
   height: 100%;
   width: 100%;
   object-fit: contain;
@@ -376,7 +384,7 @@ export default {
   /* pointer-events: none; */
 }
 
-#end > span {
+.image__container > span {
   position: absolute;
   bottom: 15px;
   font-size: 12px;
