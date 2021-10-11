@@ -10,6 +10,7 @@
         >
           <v-touch
             @swipeleft="nextPage"
+            @swiperight="prevPage"
             @panup="scroll"
             @pandown="scroll"
             class="front"
@@ -116,6 +117,13 @@ export default {
       } else {
         // 最后一页改为使用按钮重开，保留这种方式
         // 如果为最后一页则重开
+        this.isRestartDialogShow = true
+      }
+    },
+    prevPage () {
+      if (this.curPage < this.pages.length - 1 && this.curPage > 0) {
+        this.curPage--
+      } else if (this.curPage >= this.pages.length - 1) {
         this.isRestartDialogShow = true
       }
     },

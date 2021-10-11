@@ -41,6 +41,7 @@ export default {
 #dialog__card {
   position: absolute;
   width: 80%;
+  max-width: 300px;
   /* height: 50%; */
   box-sizing: border-box;
   background-color: white;
