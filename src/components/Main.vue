@@ -1,7 +1,11 @@
 <template>
   <div class="container">
-    <div id="audio__controller" @click="isAudioPlay = !isAudioPlay" v-if="isAudioCanPlay" :style="{animationPlayState: isAudioPlay ? 'running' : 'paused'}">
-      <svg t="1634018866598" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7735" width="200" height="200"><path d="M512 960A448 448 0 1 1 802.133333 170.666667a42.666667 42.666667 0 0 1-55.466666 65.493333 362.666667 362.666667 0 1 0 112 170.666667l-226.346667 226.133333a170.666667 170.666667 0 1 1 44.16-164.906667l165.546667-167.04a42.666667 42.666667 0 0 1 37.333333-13.653333 42.666667 42.666667 0 0 1 32.426667 23.04A448 448 0 0 1 512 960z m0-533.333333a85.333333 85.333333 0 0 0-60.373333 145.706666 87.466667 87.466667 0 0 0 120.746666 0l2.133334-2.133333 1.066666-1.493333A85.333333 85.333333 0 0 0 512 426.666667z" p-id="7736" :fill="isAudioPlay ? '#52C6EF' : '#D0D0D0'"></path></svg>
+    <span id="audio__notice" :class="{'hidden': isAudioCanPlay}">音乐加载中...</span>
+    <div id="audio__controller" @click="isAudioPlay = $refs.audio.paused" :class="{'show': isAudioCanPlay}">
+      <svg t="1634018866598" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7735" width="200" height="200" :style="{animationPlayState: isAudioPlay ? 'running' : 'paused'}"><path d="M512 960A448 448 0 1 1 802.133333 170.666667a42.666667 42.666667 0 0 1-55.466666 65.493333 362.666667 362.666667 0 1 0 112 170.666667l-226.346667 226.133333a170.666667 170.666667 0 1 1 44.16-164.906667l165.546667-167.04a42.666667 42.666667 0 0 1 37.333333-13.653333 42.666667 42.666667 0 0 1 32.426667 23.04A448 448 0 0 1 512 960z m0-533.333333a85.333333 85.333333 0 0 0-60.373333 145.706666 87.466667 87.466667 0 0 0 120.746666 0l2.133334-2.133333 1.066666-1.493333A85.333333 85.333333 0 0 0 512 426.666667z" p-id="7736" :fill="isAudioPlay ? '#52C6EF' : '#D0D0D0'"></path></svg>
+      <div class="audio__left-arrow">
+        <svg t="1634050609279" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2384" width="200" height="200"><path d="M866.92864 476.29312a35.84 35.84 0 1 1 0 71.68h-696.32a35.82976 35.82976 0 0 1-35.84-35.84c0-19.80416 16.03584-35.84 35.84-35.84h696.32z" fill="#e6e6e6" p-id="2385"></path><path d="M221.2864 512.13312l213.59616-213.59616a35.84 35.84 0 0 0-50.67776-50.688l-238.9504 238.9504a35.84 35.84 0 0 0 0 50.67776l238.9504 238.9504a35.84 35.84 0 0 0 50.67776-50.688l-213.59616-213.6064z" fill="#e6e6e6" p-id="2386"></path></svg>
+      </div>
     </div>
     <audio src="http://scooter.saltroping.com/static/audio.mp3" ref="audio" muted autoplay @canplay="isAudioCanPlay = true" loop></audio>
     <div id="book">
@@ -82,8 +86,28 @@ export default {
       isRestartDialogShow: false,
       restartDialogButtons: ['确认', '取消'],
       isEndLoadingShow: true,
-      isAudioPlay: true,
-      isAudioCanPlay: false
+      isAudioCanPlay: false,
+      dummyIsAudioPlay: true
+    }
+  },
+  computed: {
+    isAudioPlay: {
+      get () {
+        // this.dummyIsAudioPlay = !this.$refs.audio.paused
+        console.log(this.dummyIsAudioPlay)
+        return this.dummyIsAudioPlay
+      },
+      set (value) {
+        // console.log(this.$refs.audio.paused, value)
+        if (value) {
+          this.$refs.audio.play()
+          this.dummyIsAudioPlay = true
+        } else {
+          this.$refs.audio.pause()
+          this.dummyIsAudioPlay = false
+        }
+        // console.log(this.$refs.audio.paused)
+      }
     }
   },
   components: {
@@ -170,18 +194,9 @@ export default {
       // }
     }
   },
-  watch: {
-    isAudioPlay (newValue, oldValue) {
-      console.log(this.$refs.audio.paused)
-      if (newValue) {
-        this.$refs.audio.play()
-      } else {
-        this.$refs.audio.pause()
-      }
-    }
-  },
   mounted () {
     console.log(this)
+    this.isAudioPlay = false
   }
 }
 </script>
@@ -200,23 +215,84 @@ export default {
   overflow: hidden;
 }
 
+#audio__notice {
+  position: absolute;
+  top: 8px;
+  left: 6px;
+  color: white;
+  transition: all 0.5s ease;
+}
+
+#audio__notice.hidden {
+  opacity: 0;
+  top: 33px;
+}
+
 #audio__controller {
   position: absolute;
-  top: 6px;
+  top: -21px;
   left: 6px;
   width: 25px;
   height: 25px;
-  animation: rotate 6s linear infinite;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+#audio__controller.show {
+  opacity: 1;
+  top: 6px;
 }
 
 #audio__controller .icon {
   height: 100%;
   width: 100%;
+  animation: rotate 6s linear infinite;
 }
 
 @keyframes rotate {
   100% {
     transform: rotate(360deg);
+  }
+}
+
+#audio__controller .audio__left-arrow {
+  position: absolute;
+  left: 36px;
+  top: 3px;
+  height: 16px;
+  width: 16px;
+  animation: flash 6s 5s ease backwards 1;
+  opacity: 0;
+}
+
+@keyframes flash {
+  from {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+#audio__controller .audio__left-arrow .icon {
+  animation: notice 1.5s ease infinite;
+}
+
+@keyframes notice {
+  from {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(15px);
+  }
+  to {
+    transform: translateX(0px);
   }
 }
 
