@@ -1,5 +1,9 @@
 <template>
   <div class="container">
+    <div id="audio__controller" @click="isAudioPlay = !isAudioPlay" v-if="isAudioCanPlay" :style="{animationPlayState: isAudioPlay ? 'running' : 'paused'}">
+      <svg t="1634018866598" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7735" width="200" height="200"><path d="M512 960A448 448 0 1 1 802.133333 170.666667a42.666667 42.666667 0 0 1-55.466666 65.493333 362.666667 362.666667 0 1 0 112 170.666667l-226.346667 226.133333a170.666667 170.666667 0 1 1 44.16-164.906667l165.546667-167.04a42.666667 42.666667 0 0 1 37.333333-13.653333 42.666667 42.666667 0 0 1 32.426667 23.04A448 448 0 0 1 512 960z m0-533.333333a85.333333 85.333333 0 0 0-60.373333 145.706666 87.466667 87.466667 0 0 0 120.746666 0l2.133334-2.133333 1.066666-1.493333A85.333333 85.333333 0 0 0 512 426.666667z" p-id="7736" :fill="isAudioPlay ? '#52C6EF' : '#D0D0D0'"></path></svg>
+    </div>
+    <audio src="http://scooter.saltroping.com/static/audio.mp3" ref="audio" muted autoplay @canplay="isAudioCanPlay = true" loop></audio>
     <div id="book">
       <div id="spine"></div>
       <template v-for="page in pages">
@@ -77,7 +81,9 @@ export default {
       scrollTop: 0,
       isRestartDialogShow: false,
       restartDialogButtons: ['确认', '取消'],
-      isEndLoadingShow: true
+      isEndLoadingShow: true,
+      isAudioPlay: true,
+      isAudioCanPlay: false
     }
   },
   components: {
@@ -164,6 +170,16 @@ export default {
       // }
     }
   },
+  watch: {
+    isAudioPlay (newValue, oldValue) {
+      console.log(this.$refs.audio.paused)
+      if (newValue) {
+        this.$refs.audio.play()
+      } else {
+        this.$refs.audio.pause()
+      }
+    }
+  },
   mounted () {
     console.log(this)
   }
@@ -184,6 +200,26 @@ export default {
   overflow: hidden;
 }
 
+#audio__controller {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 25px;
+  height: 25px;
+  animation: rotate 6s linear infinite;
+}
+
+#audio__controller .icon {
+  height: 100%;
+  width: 100%;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 #book {
   /* margin: 0 33px; */
   position: absolute;
@@ -200,6 +236,7 @@ export default {
   color: white;
   opacity: 0.2;
   animation: 14s linear infinite notice_fly;
+  pointer-events: none;
 }
 
 #book::after {
@@ -209,6 +246,7 @@ export default {
   color: white;
   opacity: 0.2;
   animation: 14s linear infinite notice_fly;
+  pointer-events: none;
 }
 
 @keyframes notice_fly {
