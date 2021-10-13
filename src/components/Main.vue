@@ -19,8 +19,6 @@
           <v-touch
             @swipeleft="nextPage"
             @swiperight="prevPage"
-            @panup="scroll"
-            @pandown="scroll"
             class="front"
             :class="page.type"
             :style="{ zIndex: (pages.length - page.id) * 2 + pages.length }"
@@ -76,15 +74,248 @@ import Loading from './Loading.vue'
 
 export default {
   data () {
-    let json = require('../../static/pages.json')
     return {
       curPage: 0,
-      pages: json.pages,
+      pages: [
+        {
+          id: 0,
+          type: 'start'
+        }, {
+          id: 1,
+          type: 'question',
+          question: {
+            id: 1,
+            title: '骑电动车上坡时，如果马力不足，可以用走S型路线的方式上坡。',
+            options: [
+              {
+                id: 0,
+                text: '✔'
+              }, {
+                id: 1,
+                text: '✘'
+              }
+            ],
+            ansOptions: [1],
+            answer: '上坡时马力不足，可以采用下车靠边推行的方式，千万不要走“s”弯路线！那样很危险！'
+          }
+        }, {
+          id: 2,
+          type: 'question',
+          question: {
+            id: 2,
+            title: '在教学楼附近行驶时，前方出现行人占道现象，应当鸣笛提醒，并减速缓慢超越。',
+            options: [
+              {
+                id: 0,
+                text: '✔'
+              }, {
+                id: 1,
+                text: '✘'
+              }
+            ],
+            ansOptions: [1],
+            answer: '在教学楼附近是不可以鸣喇叭的哦！如果要遇到前方行人占道，可以减速靠近，通过电动车发出的声音提醒行人及时让行！再不然喊一下也可以的嘛~'
+          }
+        }, {
+          id: 3,
+          type: 'question',
+          question: {
+            id: 3,
+            title: '在夜间通过急弯路段进行超车时，应当注意观察情况，及时超越前方车辆。',
+            options: [
+              {
+                id: 0,
+                text: '✔'
+              }, {
+                id: 1,
+                text: '✘'
+              }
+            ],
+            ansOptions: [1],
+            answer: '夜间的急弯是不可以超车的哦！其他不可以超车的路段还包括陡坡（湖滨绝望坡！），窄路（譬如人流密集的樱花大道），拱桥等等。'
+          }
+        }, {
+          id: 4,
+          type: 'question',
+          question: {
+            id: 4,
+            title: '图中的驾驶人有几处危险行为？',
+            src: 'https://tva3.sinaimg.cn/mw690/005K8PLRgy1gvajrz8a7zj60mj0kudgl02.jpg',
+            flexDirection: 'row',
+            options: [
+              {
+                id: 0,
+                text: '1'
+              }, {
+                id: 1,
+                text: '2'
+              }, {
+                id: 2,
+                text: '3'
+              }, {
+                id: 3,
+                text: '4'
+              }
+            ],
+            ansOptions: [1],
+            answer: '骑行时要佩戴好头盔，并且不能边打电话边骑车哦！'
+          }
+        }, {
+          id: 5,
+          type: 'question',
+          question: {
+            id: 5,
+            title: '通过路口时，下列说法不正确的是',
+            options: [
+              {
+                id: 0,
+                text: '左转车辆让直行车辆先行'
+              }, {
+                id: 1,
+                text: '左转车辆让右转车辆先行'
+              }, {
+                id: 2,
+                text: '减速，注意观察路口情况'
+              }, {
+                id: 3,
+                text: '在路口时遵循“左转转大弯，右转转小弯”原则'
+              }
+            ],
+            ansOptions: [1],
+            answer: '在路口的时候，通行顺序为直行优先通过，其次是左转，最后才是右转，因此左转车辆要为直行车辆让路，右转车辆要最后通行！通过路口时不仅要减速慢行注意观察，还要遵守“左转转大弯，右转转小弯”的原则哦。'
+          }
+        }, {
+          id: 6,
+          type: 'question',
+          question: {
+            id: 6,
+            title: '在路面湿滑或泥泞的地段行车，下列说法正确的是',
+            options: [
+              {
+                id: 0,
+                text: '注意观察，及时刹停'
+              }, {
+                id: 1,
+                text: '减速慢行，轻捏刹车'
+              }, {
+                id: 2,
+                text: '路过水坑时要快速驶过'
+              }, {
+                id: 3,
+                text: '下雨时骑车可以撑伞'
+              }
+            ],
+            ansOptions: [1],
+            answer: '路面泥泞或湿滑时，轮胎附着力减小，此时贸然刹车会导致车辆侧滑！这个是骑车应当减速慢行，下坡时轻点刹车及时减速，千万不能一边打伞一边骑车哦！'
+          }
+        }, {
+          id: 7,
+          type: 'question',
+          question: {
+            id: 7,
+            title: '关于校园道路安全骑行，下列说法正确的是',
+            options: [
+              {
+                id: 0,
+                text: '可以短时间双手离开转向把骑行'
+              }, {
+                id: 1,
+                text: '车辆密集时超车可以越过中线超越车辆'
+              }, {
+                id: 2,
+                text: '前方机动车占道时，紧贴机动车并加速超越'
+              }, {
+                id: 3,
+                text: '提前熟悉好路线，行驶时不随意刹停看导航'
+              }
+            ],
+            ansOptions: [3],
+            answer: '双手扶稳方向把是最基础的骑行准则！车辆密集时超车也不能越过中线（参考上下学时的樱花大道）前方机动车占道时，应该保持一定距离跟在后面，还有，路上走着走着突然刹停真的很过分！'
+          }
+        }, {
+          id: 8,
+          type: 'question',
+          question: {
+            id: 8,
+            title: '下列标志的含义是',
+            src: 'https://tvax3.sinaimg.cn/mw690/005K8PLRgy1gvajs0kx37j61s02dcaop02.jpg',
+            flexDirection: 'row',
+            options: [
+              {
+                id: 0,
+                text: '禁止冲坡'
+              }, {
+                id: 1,
+                text: '注意前方陡坡'
+              }, {
+                id: 2,
+                text: '请勿骑车'
+              }, {
+                id: 3,
+                text: '禁止滑板'
+              }
+            ],
+            ansOptions: [0],
+            answer: '当然是“禁止冲坡”啦'
+          }
+        }, {
+          id: 9,
+          type: 'question',
+          question: {
+            id: 9,
+            title: '驾驶电动车需要在路边停车时怎样选择停车地点？',
+            options: [
+              {
+                id: 0,
+                text: '在人行道上停放'
+              }, {
+                id: 1,
+                text: '在路边随意停放'
+              }, {
+                id: 2,
+                text: '在停车泊位内有序停放'
+              }, {
+                id: 3,
+                text: '靠左侧路边停放'
+              }
+            ],
+            ansOptions: [2],
+            answer: '停车时要在停车泊位内有序停放，不要挡住别人出来的路了！'
+          }
+        }, {
+          id: 10,
+          type: 'question',
+          question: {
+            id: 10,
+            title: '2021年9月7日9时许，刘某在湖滨大道上骑着安装有遮阳伞的电动车在下坡过程中试图超越梁某驾驶的电动车，导致梁某摔倒，受轻伤。此次事件中，刘某有哪些过错？（双选）',
+            options: [
+              {
+                id: 0,
+                text: '非法改装电动车'
+              }, {
+                id: 1,
+                text: '超速驾驶'
+              }, {
+                id: 2,
+                text: '陡坡超车'
+              }, {
+                id: 3,
+                text: '超员驾驶'
+              }
+            ],
+            ansOptions: [0, 2],
+            answer: '电动车上禁止加装遮阳伞等部件！陡坡超车真的很危险！'
+          }
+        }, {
+          id: 11,
+          type: 'end'
+        }
+      ],
       score: 0,
       loop: 0,
       scrollTop: 0,
       isRestartDialogShow: false,
-      restartDialogButtons: ['确认', '取消'],
+      restartDialogButtons: ['确定', '取消'],
       isEndLoadingShow: true,
       isAudioCanPlay: false,
       dummyIsAudioPlay: true
@@ -94,7 +325,7 @@ export default {
     isAudioPlay: {
       get () {
         // this.dummyIsAudioPlay = !this.$refs.audio.paused
-        console.log(this.dummyIsAudioPlay)
+        // console.log(this.dummyIsAudioPlay)
         return this.dummyIsAudioPlay
       },
       set (value) {
@@ -182,20 +413,9 @@ export default {
     },
     calcQuestionResult (res) {
       this.score += res ? 10 : 0
-    },
-    scroll (e) {
-      // console.log(e)
-      // if (e.type === 'panup') {
-      //   this.scrollTop -= e.distance / 16
-      //   console.log(this.scrollTop)
-      // } else if (e.type === 'pandown') {
-      //   this.scrollTop += e.distance / 16
-      //   console.log(this.scrollTop)
-      // }
     }
   },
   mounted () {
-    console.log(this)
     this.isAudioPlay = false
   }
 }
